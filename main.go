@@ -8,7 +8,16 @@ import (
 	"time"
 )
 
+// default configuration
+var (
+	output = "/tmp/mnt.log"
+)
+
 func main() {
+	if o := os.Getenv("OUTPUT"); o != "" {
+		output = o
+	}
+
 	cmd := exec.Command(os.Args[1], os.Args[2:]...)
 
 	cmd.Stdout = os.Stdout
@@ -19,7 +28,7 @@ func main() {
 	cmd.Run()
 	processTime := time.Since(t)
 
-	f, err := os.OpenFile("mnt.log", os.O_RDWR|os.O_APPEND|os.O_CREATE, 0660)
+	f, err := os.OpenFile(output, os.O_RDWR|os.O_APPEND|os.O_CREATE, 0660)
 	if err != nil {
 		panic(err)
 	}
